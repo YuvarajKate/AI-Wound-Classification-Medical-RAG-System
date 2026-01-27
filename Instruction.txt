@@ -1,0 +1,200 @@
+AI WOUND CLASSIFICATION & MEDICAL RAG SYSTEM
+===========================================
+
+An end-to-end Flask AI system that:
+- Classifies wound images using CNN (TensorFlow)
+- Provides medical guidance using RAG (LangChain + Chroma + Ollama)
+
+Purpose: Exam | Viva | Interviews | Real-world demo
+
+===================================================
+SYSTEM ARCHITECTURE (Diagrammatic)
+===================================================
+
+User
+ ├─ Upload Image / Image URL
+ └─ Ask Medical Question
+        ↓
+Flask App (app.py)
+ ├─ CNN Model (TensorFlow)
+ │      ↓
+ │  Wound Prediction
+ │
+ └─ RAG System (LangChain)
+        ↓
+   Chroma Vector DB
+        ↓
+   Ollama LLM
+        ↓
+   Medical Guidance
+
+===================================================
+SUPPORTED WOUND CLASSES
+===================================================
+
+Abrasions
+Bruises
+Burns
+Cut
+Ingrown_nails
+Laceration
+Stab_wound
+Healthy
+
+===================================================
+TECH STACK
+===================================================
+
+Backend     : Flask  
+ML Model    : TensorFlow (CNN)  
+RAG         : LangChain  
+Vector DB   : Chroma  
+LLM         : Ollama (Elixpo/LlamaMedicine)  
+Embeddings  : nomic-embed-text  
+Frontend    : HTML (Jinja)
+
+===================================================
+PROJECT STRUCTURE
+===================================================
+
+.
+├── app.py
+├── wound_classifier_final.keras
+├── class_names.json
+├── uploads/
+├── medical_knowledge_db/
+├── chroma_db/
+├── templates/
+│   └── index.html
+├── Dockerfile
+└── PROJECT_DOC.txt
+
+===================================================
+WORKING LOGIC
+===================================================
+
+IMAGE CLASSIFICATION:
+Image → Resize(224x224) → CNN → Softmax → Wound Type
+
+MEDICAL RAG:
+Question → Embedding → Chroma Search → PDF Context → LLM → Answer
+
+===================================================
+WHY RAG
+===================================================
+
+- Prevents hallucination
+- Uses trusted medical PDFs
+- Safer for healthcare
+- Interview-grade architecture
+
+===================================================
+DOCKERFILE
+===================================================
+
+Save as: Dockerfile
+
+----------------------------
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+----------------------------
+
+===================================================
+DOCKER SETUP & RUN
+===================================================
+
+1) Build Image
+--------------
+docker build -t wound-ai .
+
+2) Run Container
+----------------
+docker run -p 5000:5000 wound-ai
+
+3) Open Browser
+---------------
+http://127.0.0.1:5000
+
+===================================================
+OLLAMA SETUP (LOCAL LLM)
+===================================================
+
+Install Ollama
+--------------
+https://ollama.com
+
+Run Model
+---------
+ollama run Elixpo/LlamaMedicine
+
+===================================================
+SINGLE USER FLOW (How One Person Uses It)
+===================================================
+
+Step 1:
+Open browser → http://127.0.0.1:5000
+
+Step 2:
+User uploads wound image
+OR
+User pastes image URL
+
+Step 3:
+System predicts wound type
+(example: "Burns")
+
+Step 4:
+User asks question:
+"What first aid should I do for burns?"
+
+Step 5:
+System flow:
+Question → RAG → Medical PDFs → LLM → Answer
+
+Step 6:
+User gets:
+- Wound type
+- First aid guidance
+- Medical advice text
+
+===================================================
+EXAM / INTERVIEW ONE-LINER
+===================================================
+
+"This is a Flask-based AI system that combines CNN for image classification
+and RAG architecture for medical guidance using LangChain, Chroma, and
+local LLM via Ollama."
+
+===================================================
+KEY INTERVIEW TERMS
+===================================================
+
+CNN
+RAG
+Vector Database
+Embeddings
+LLM
+Ollama
+Chroma
+Flask
+Semantic Search
+Medical AI System
+End-to-End Pipeline
+
+===================================================
+DISCLAIMER
+===================================================
+
+Educational project only.
+Not a replacement for professional medical advice.
+===================================================
