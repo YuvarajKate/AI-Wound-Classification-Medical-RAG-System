@@ -4,6 +4,10 @@ An end-to-end **Flask-based AI application** that classifies wound images using 
 
 ---
 
+<code> 
+Dataset Link - https://drive.google.com/drive/folders/1vgbEtBshfLRfwxig2wKiTb3mss5_PQt2?usp=sharing
+</code>
+
 ## 🔹 System Architecture
 
 The application utilizes a modular AI pipeline:
