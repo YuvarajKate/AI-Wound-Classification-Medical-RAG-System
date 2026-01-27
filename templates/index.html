@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedCare AI | Wound Diagnostic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F8FAFC;
+        }
+
+        .medical-blue {
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+        }
+
+        /* Markdown formatting styles */
+        #firstAid h1,
+        #firstAid h2,
+        #firstAid h3 {
+            font-weight: bold;
+            margin-top: 1rem;
+            color: #1e293b;
+        }
+
+        #firstAid ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #firstAid p {
+            margin-bottom: 0.75rem;
+        }
+
+        #firstAid strong {
+            color: #0f172a;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <nav class="medical-blue text-white p-4 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">✚ MedCare AI</h1>
+            <span
+                class="text-xs bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30">LlamaMedicine
+                Active</span>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-slate-900 mb-4 text-lg">Diagnostic Input</h2>
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Option
+                            A: Local Upload</label>
+                        <input type="file" id="imageInput"
+                            class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-30 cursor-pointer" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <hr class="flex-grow border-slate-100">
+                        <span class="text-[10px] text-slate-300 font-bold uppercase tracking-widest">OR</span>
+                        <hr class="flex-grow border-slate-100">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Option
+                            B: Image URL</label>
+                        <input type="text" id="urlInput" placeholder="https://..."
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all disabled:bg-slate-50 disabled:text-slate-300" />
+                        <p id="urlError" class="text-red-500 text-[10px] mt-2 hidden font-bold italic">⚠️ URL must end
+                            with .jpg, .png, or .webp</p>
+                    </div>
+                    <button id="predictBtn"
+                        class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 active:scale-[0.98] transition-all">Analyze
+                        Wound</button>
+                    <button id="resetBtn"
+                        class="w-full text-slate-400 text-[11px] font-bold hover:text-red-500 transition-all mt-2 uppercase tracking-widest">Reset
+                        Form</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-8">
+            <div id="loading"
+                class="hidden flex flex-col items-center justify-center h-64 bg-white rounded-2xl border-2 border-dashed border-slate-200">
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+                <p class="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Processing Neural
+                    Diagnostic...</p>
+            </div>
+
+            <div id="resultArea" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Diagnosis</span>
+                        <p id="woundType" class="text-2xl font-extrabold text-slate-900 mt-1 capitalize tracking-tight">
+                        </p>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI
+                            Confidence</span>
+                        <p id="confidence" class="text-2xl font-extrabold text-emerald-600 mt-1"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-900 px-8 py-5 flex justify-between items-center">
+                        <h3 class="font-bold text-white text-sm tracking-wide uppercase">📋 Medical First-Aid Protocol
+                        </h3>
+                        <span
+                            class="text-[9px] bg-emerald-500 text-white px-2 py-1 rounded font-black uppercase">Trusted
+                            Content</span>
+                    </div>
+                    <div id="firstAid" class="p-8 text-slate-700 leading-relaxed text-base italic bg-slate-50/50"></div>
+                    <div
+                        class="p-4 bg-slate-100 border-t border-slate-200 text-center text-[10px] text-slate-400 font-bold uppercase">
+                        Disclaimer: Information provided by AI. Consult a doctor for professional advice.</div>
+                </div>
+            </div>
+
+            <div id="placeholder"
+                class="flex flex-col items-center justify-center h-full min-h-[400px] bg-slate-100/50 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400">
+                <p class="text-lg font-bold">Ready for Analysis</p>
+                <p class="text-xs mt-2 uppercase tracking-widest">Select an image to view diagnostic results</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('imageInput');
+        const urlInput = document.getElementById('urlInput');
+        const predictBtn = document.getElementById('predictBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const urlError = document.getElementById('urlError');
+
+        // Mutual Exclusion: Disable one when other is used
+        fileInput.onchange = () => {
+            if (fileInput.files.length) {
+                urlInput.disabled = true;
+                urlInput.value = "";
+            }
+        };
+
+        urlInput.oninput = () => {
+            if (urlInput.value.trim().length > 0) {
+                fileInput.disabled = true;
+                fileInput.value = "";
+            } else {
+                fileInput.disabled = false;
+            }
+        };
+
+        resetBtn.onclick = () => {
+            fileInput.disabled = false;
+            urlInput.disabled = false;
+            fileInput.value = "";
+            urlInput.value = "";
+            urlError.classList.add('hidden');
+            urlInput.classList.remove('border-red-500');
+            document.getElementById('resultArea').classList.add('hidden');
+            document.getElementById('placeholder').classList.remove('hidden');
+        };
+
+        predictBtn.onclick = async () => {
+            const urlValue = urlInput.value.trim();
+            if (urlValue !== "") {
+                const isImage = /\.(jpg|jpeg|png|webp)$/i.test(urlValue);
+                if (!isImage) {
+                    urlError.classList.remove('hidden');
+                    urlInput.classList.add('border-red-500');
+                    return;
+                }
+            }
+
+            const formData = new FormData();
+            if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
+            if (urlValue) formData.append('image_url', urlValue);
+
+            if (!fileInput.files[0] && !urlValue) return alert("Please provide an image or URL.");
+
+            document.getElementById('placeholder').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultArea').classList.add('hidden');
+
+            try {
+                const response = await fetch('/predict', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                document.getElementById('woundType').innerText = data.wound_type;
+                document.getElementById('confidence').innerText = (data.confidence * 100).toFixed(1) + "%";
+
+                // ✅ Fix: Parse Markdown text into HTML
+                document.getElementById('firstAid').innerHTML = marked.parse(data.first_aid);
+
+                document.getElementById('resultArea').classList.remove('hidden');
+            } catch (e) {
+                alert("Server Connection Error: " + e.message);
+                document.getElementById('placeholder').classList.remove('hidden');
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        };
+    </script>
+</body>
+
+</html>
