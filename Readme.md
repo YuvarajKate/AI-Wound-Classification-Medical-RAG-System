@@ -55,6 +55,7 @@ The application utilizes a modular AI pipeline:
 
 ## 🔹 Deployment (Docker)
 This project is containerized for production-ready consistency. It uses a Hybrid Architecture where the application logic is isolated in Docker while connecting to the host machine's LLM service.
+</br>
 To Build 
 <code>
 docker build -t <image_name> .
@@ -71,14 +72,14 @@ docker run -d --name woundapp \
 </code>
 
 
-## Technical Implementation Details:
+## 🔹 Technical Implementation Details:
 
 - Networking: host.docker.internal allows the containerized Flask app to communicate with the Ollama service running on the host OS.
 - Volumes: Persistent storage is mounted for the medical_knowledge_db and chroma_db to ensure search indices remain intact during restarts.
 - Environment Variables: The OLLAMA_BASE_URL allows for flexible LLM endpoint configuration without modifying code.
 
 
-🔹 Key Technical Highlights for Interviews
+## 🔹 Key Technical Highlights for Interviews
 
 - RAG over Plain LLM: Prevents medical hallucinations by forcing the model to answer based only on provided medical literature.
 - Edge Privacy: By using Ollama, the system performs local inference, ensuring sensitive medical data never leaves the local environment.
