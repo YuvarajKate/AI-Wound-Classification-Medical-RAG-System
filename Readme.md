@@ -1,9 +1,9 @@
 # 🩺 AI Wound Classification & Medical RAG System
 
-An end-to-end **Flask-based AI application** that classifies wound images using a **CNN (TensorFlow)** and provides grounded medical guidance using **RAG (Retrieval-Augmented Generation)**.
+An end-to-end **Flask-based AI application** that classifies wound images using a **EfficientNet (TensorFlow)** and provides grounded medical guidance using **RAG (Retrieval-Augmented Generation)**.
 
 ---
-
+ 
 <code> 
 Dataset Link - https://drive.google.com/drive/folders/1vgbEtBshfLRfwxig2wKiTb3mss5_PQt2?usp=sharing
 </code>
