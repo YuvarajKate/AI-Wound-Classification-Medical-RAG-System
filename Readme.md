@@ -1,148 +1,77 @@
-# 🩺 AI Wound Classification & Medical RAG System
+🩺 AI Wound Classification & Medical RAG System
+This project is an end-to-end Flask-based AI application that integrates Computer Vision and Natural Language Processing. It classifies wound types using a Convolutional Neural Network (CNN) and provides contextual medical guidance using Retrieval-Augmented Generation (RAG) powered by a local LLM.
 
-An end-to-end **Flask-based AI application** that:
-- Classifies wound images using a **CNN (TensorFlow)**
-- Provides **medical guidance** using **RAG (Retrieval-Augmented Generation)** with a local LLM
+🏗️ System Architecture
+The system follows a modular architecture separating visual perception from knowledge retrieval.
 
-Designed for **exam, viva, and technical interviews**.
+Workflow:
 
----
+User Input: The user uploads a wound image or asks a medical question via a web interface.
 
-## 🔹 System Architecture (Diagrammatic)
+Vision Pipeline: The Flask backend routes the image to a pre-trained TensorFlow CNN for classification.
 
-User (Browser)
-├── Upload Image / Image URL
-└── Ask Medical Question
-↓
-Flask Application (app.py)
-├── CNN Model (TensorFlow)
-│ ↓
-│ Wound Classification
-│
-└── RAG Pipeline (LangChain)
-↓
-Chroma Vector Database
-↓
-Ollama LLM (LlamaMedicine)
-↓
-Medical Guidance
+Knowledge Pipeline: For queries, the LangChain framework performs a similarity search in a Chroma Vector DB to find relevant context from medical PDFs.
 
----
+Generation: The Ollama (LlamaMedicine) LLM synthesizes the final answer based strictly on the retrieved context.
 
-## 🔹 Supported Wound Classes
-
-Abrasions
-Bruises
-Burns
-Cut
-Ingrown_nails
-Laceration
-Stab_wound
-Healthy
-
----
-
-## 🔹 Technology Stack
-
-| Layer | Technology |
-|-----|-----------|
-| Backend | Flask |
-| ML Model | TensorFlow (CNN) |
-| RAG Framework | LangChain |
-| Vector DB | Chroma |
-| LLM | Ollama (Elixpo/LlamaMedicine) |
-| Embeddings | nomic-embed-text |
-| Frontend | HTML (Jinja Templates) |
-
----
-
-## 🔹 Project Structure
-
+🛠️ Technology Stack
+Layer	Technology	Role
+Backend	Flask	Handles routing, image processing, and API logic.
+Computer Vision	TensorFlow / Keras	A CNN model trained to classify 8 types of wounds.
+RAG Framework	LangChain	Orchestrates the flow between the DB and the LLM.
+Vector Database	Chroma DB	Stores high-dimensional embeddings of medical text.
+Local LLM	Ollama (LlamaMedicine)	Generates safe, context-aware medical responses locally.
+Embeddings	nomic-embed-text	Converts text into vectors for semantic search.
+📂 Project Structure
+Plaintext
 .
-├── app.py # Main Flask app
-├── wound_classifier_final.keras # Trained CNN model
-├── class_names.json # Wound labels
-├── uploads/ # Uploaded images
-├── medical_knowledge_db/ # Medical PDFs
-├── chroma_db/ # Vector store
-├── templates/
-│ └── index.html # UI
-└── README.md
+├── app.py                      # Core Flask application & API routes
+├── wound_classifier_final.keras # Trained CNN model (H5/Keras format)
+├── class_names.json            # Mapping of indices to wound labels
+├── medical_knowledge_db/       # Source Folder: Trusted Medical PDFs
+├── chroma_db/                  # Persistent Vector Store
+├── uploads/                    # Temporary storage for user-uploaded images
+├── templates/                  # Frontend: Jinja2 HTML templates
+└── requirements.txt            # Project dependencies
+🔬 Core Components Explained
+1. Image Classification (CNN)
 
----
+The model takes an input image, resizes it to 224×224 pixels, and passes it through multiple convolutional and pooling layers to extract features. The final Softmax layer outputs probabilities for the following classes:
 
-## 🔹 Working Explained
+Abrasions, Bruises, Burns, Cut, Ingrown Nails, Laceration, Stab Wound, and Healthy Skin.
 
-### Image Classification Flow
+2. Medical RAG (Retrieval-Augmented Generation)
 
-Input Image
-↓
-Resize (224 × 224)
-↓
-CNN Model
-↓
-Softmax Layer
-↓
-Predicted Wound Type
+Standard LLMs can "hallucinate" (invent facts). To ensure safety:
 
----
+Indexing: Medical PDFs are split into chunks and converted into vectors.
 
-### Medical RAG Flow
+Retrieval: When a user asks a question, the system finds the most similar chunks in Chroma DB.
 
-User Question
-↓
-Text Embedding
-↓
-Chroma Similarity Search
-↓
-Relevant PDF Context
-↓
-Ollama LLM
-↓
-Context-Based Medical Answer
+Grounding: The LLM is prompted: "Answer using ONLY the following context..." This ensures the advice is based on verified medical literature.
 
----
+🚀 Setup & Execution
+Install Dependencies:
 
-## 🔹 Why RAG Instead of Plain LLM?
+Bash
+pip install flask tensorflow langchain chromadb ollama
+Initialize LLM:
 
-- Prevents hallucinations
-- Answers only from **trusted medical PDFs**
-- Safer for healthcare-related use cases
-- Strong architectural choice for interviews
-
----
-
-## 🔹 Setup & Run
-
-### 1. Install Dependencies
-```bash
-pip install -r requirements.txt
-2. Start Ollama
+Bash
 ollama run Elixpo/LlamaMedicine
-3. Run Application
+Launch App:
+
+Bash
 python app.py
-4. Open in Browser
-http://127.0.0.1:5000
-🔹 Key Interview Points
-CNN handles visual understanding
-RAG handles knowledge grounding
-Chroma enables semantic search
-Ollama allows local, private LLM inference
-Clean separation of ML and NLP pipelines
-🔹 Future Enhancements
-Confidence score visualization
-Multilingual medical responses
-Mobile-first UI
-Doctor-verified response layer
-⚠️ Disclaimer
-This project is for educational purposes only.
-It is not a substitute for professional medical advice.
+Access the UI at http://127.0.0.1:5000.
 
----
+🎓 Interview & Viva Key Points
+Why Flask? It’s lightweight and ideal for deploying ML models without the overhead of larger frameworks.
 
-If you want next:
-- 🔹 **One-page viva notes**
-- 🔹 **System design explanation (2–3 min answer)**
-- 🔹 **Interview Q&A from this project**
+Why CNN? CNNs are the gold standard for spatial feature extraction in images (detecting edges, textures, and wound patterns).
 
-Just say the word.
+Why RAG? RAG provides traceability and reliability. Unlike a base LLM, we can point to the specific PDF page where the information originated.
+
+Local Inference: By using Ollama, the medical data remains private and does not leave the local machine, addressing data privacy concerns in healthcare.
+
+⚠️ Disclaimer: This project is for educational and demonstrative purposes. It is not a certified medical diagnostic tool.
