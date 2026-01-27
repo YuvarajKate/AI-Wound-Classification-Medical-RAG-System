@@ -1,77 +1,88 @@
-🩺 AI Wound Classification & Medical RAG System
-This project is an end-to-end Flask-based AI application that integrates Computer Vision and Natural Language Processing. It classifies wound types using a Convolutional Neural Network (CNN) and provides contextual medical guidance using Retrieval-Augmented Generation (RAG) powered by a local LLM.
+# 🩺 AI Wound Classification & Medical RAG System
 
-🏗️ System Architecture
-The system follows a modular architecture separating visual perception from knowledge retrieval.
+An end-to-end **Flask-based AI application** that classifies wound images using a **CNN (TensorFlow)** and provides grounded medical guidance using **RAG (Retrieval-Augmented Generation)**.
 
-Workflow:
+---
 
-User Input: The user uploads a wound image or asks a medical question via a web interface.
+## 🔹 System Architecture
 
-Vision Pipeline: The Flask backend routes the image to a pre-trained TensorFlow CNN for classification.
+The application utilizes a modular AI pipeline:
+1.  **Vision Pipeline:** Processes image uploads through a **TensorFlow CNN** to identify 8 specific wound classes.
+2.  **RAG Pipeline:** Uses **LangChain** and **ChromaDB** to retrieve context from trusted medical PDFs.
+3.  **Inference Engine:** Generates safe, non-hallucinated responses via a local **Ollama LLM**.
 
-Knowledge Pipeline: For queries, the LangChain framework performs a similarity search in a Chroma Vector DB to find relevant context from medical PDFs.
+---
 
-Generation: The Ollama (LlamaMedicine) LLM synthesizes the final answer based strictly on the retrieved context.
+## 🔹 Technology Stack
 
-🛠️ Technology Stack
-Layer	Technology	Role
-Backend	Flask	Handles routing, image processing, and API logic.
-Computer Vision	TensorFlow / Keras	A CNN model trained to classify 8 types of wounds.
-RAG Framework	LangChain	Orchestrates the flow between the DB and the LLM.
-Vector Database	Chroma DB	Stores high-dimensional embeddings of medical text.
-Local LLM	Ollama (LlamaMedicine)	Generates safe, context-aware medical responses locally.
-Embeddings	nomic-embed-text	Converts text into vectors for semantic search.
-📂 Project Structure
-Plaintext
+| Layer | Technology | Role |
+|:--- |:--- |:--- |
+| **Backend** | Flask | API Orchestration & Routing |
+| **ML Model** | TensorFlow | CNN-based Image Classification |
+| **RAG Framework** | LangChain | Knowledge Retrieval Logic |
+| **Vector DB** | Chroma | Semantic Search & Embeddings |
+| **Containerization**| **Docker** | Environment Isolation & Portability |
+| **LLM** | Ollama | Local Inference (LlamaMedicine) |
+
+---
+
+## 🔹 Supported Wound Classes
+* Abrasions
+* Bruises
+* Burns
+* Cut
+* Ingrown_nails
+* Laceration
+* Stab_wound
+* Healthy
+
+---
+
+## 🔹 Project Structure
+```text
 .
-├── app.py                      # Core Flask application & API routes
-├── wound_classifier_final.keras # Trained CNN model (H5/Keras format)
-├── class_names.json            # Mapping of indices to wound labels
-├── medical_knowledge_db/       # Source Folder: Trusted Medical PDFs
+├── app.py                      # Main Flask Backend
+├── Dockerfile                  # Container Configuration
+├── wound_classifier_final.keras # Trained CNN Model
+├── class_names.json            # Wound Label Mapping
+├── medical_knowledge_db/       # Trusted Medical PDFs
 ├── chroma_db/                  # Persistent Vector Store
-├── uploads/                    # Temporary storage for user-uploaded images
-├── templates/                  # Frontend: Jinja2 HTML templates
-└── requirements.txt            # Project dependencies
-🔬 Core Components Explained
-1. Image Classification (CNN)
+├── uploads/                    # User Uploaded Images
+├── templates/                  # Frontend UI (Jinja2)
+└── requirements.txt            # Dependencies
+```
 
-The model takes an input image, resizes it to 224×224 pixels, and passes it through multiple convolutional and pooling layers to extract features. The final Softmax layer outputs probabilities for the following classes:
 
-Abrasions, Bruises, Burns, Cut, Ingrown Nails, Laceration, Stab Wound, and Healthy Skin.
+## 🔹 Deployment (Docker)
+This project is containerized for production-ready consistency. It uses a Hybrid Architecture where the application logic is isolated in Docker while connecting to the host machine's LLM service.
+To Build 
+<code>
+docker build -t <image_name> .
+</code>
+To Run
+<code>
+docker run -d --name woundapp \
+  -p 5001:5000 \
+  -e OLLAMA_BASE_URL="[http://host.docker.internal:11434](http://host.docker.internal:11434)" \
+  -v "$(pwd)/medical_knowledge_db:/app/medical_knowledge_db" \
+  -v "$(pwd)/chroma_db:/app/chroma_db" \
+  -v "$(pwd)/uploads:/app/uploads" \
+  wound-rag-app
+</code>
 
-2. Medical RAG (Retrieval-Augmented Generation)
 
-Standard LLMs can "hallucinate" (invent facts). To ensure safety:
+## Technical Implementation Details:
 
-Indexing: Medical PDFs are split into chunks and converted into vectors.
+- Networking: host.docker.internal allows the containerized Flask app to communicate with the Ollama service running on the host OS.
+- Volumes: Persistent storage is mounted for the medical_knowledge_db and chroma_db to ensure search indices remain intact during restarts.
+- Environment Variables: The OLLAMA_BASE_URL allows for flexible LLM endpoint configuration without modifying code.
 
-Retrieval: When a user asks a question, the system finds the most similar chunks in Chroma DB.
 
-Grounding: The LLM is prompted: "Answer using ONLY the following context..." This ensures the advice is based on verified medical literature.
+🔹 Key Technical Highlights for Interviews
 
-🚀 Setup & Execution
-Install Dependencies:
+- RAG over Plain LLM: Prevents medical hallucinations by forcing the model to answer based only on provided medical literature.
+- Edge Privacy: By using Ollama, the system performs local inference, ensuring sensitive medical data never leaves the local environment.
+- Model Optimization: The CNN handles spatial feature extraction (texture/edges), while the RAG pipeline handles semantic knowledge retrieval.
+- DevOps Readiness: Full Dockerization ensures the "it works on my machine" problem is eliminated, providing a clean path to cloud deployment.
 
-Bash
-pip install flask tensorflow langchain chromadb ollama
-Initialize LLM:
 
-Bash
-ollama run Elixpo/LlamaMedicine
-Launch App:
-
-Bash
-python app.py
-Access the UI at http://127.0.0.1:5000.
-
-🎓 Interview & Viva Key Points
-Why Flask? It’s lightweight and ideal for deploying ML models without the overhead of larger frameworks.
-
-Why CNN? CNNs are the gold standard for spatial feature extraction in images (detecting edges, textures, and wound patterns).
-
-Why RAG? RAG provides traceability and reliability. Unlike a base LLM, we can point to the specific PDF page where the information originated.
-
-Local Inference: By using Ollama, the medical data remains private and does not leave the local machine, addressing data privacy concerns in healthcare.
-
-⚠️ Disclaimer: This project is for educational and demonstrative purposes. It is not a certified medical diagnostic tool.
