@@ -26,7 +26,7 @@ The application utilizes a modular AI pipeline:
 
 ---
 
-https://chatgpt.com/backend-api/estuary/content?id=88714610be9488a%23file_0000000083107207abaea8ae9b0d0357%23md&ts=491530&p=fs&cid=1&sig=f1df4f8625f537e416d2626ac00ad16506a76c75335f0617769d363c0da35e1c&v=0<img width="800" height="533" alt="image" src="https://github.com/user-attachments/assets/a153b5fa-13a7-421a-943f-b4e2accf38d1" />
+<img width="800" height="533" alt="image" src="https://github.com/user-attachments/assets/a153b5fa-13a7-421a-943f-b4e2accf38d1" />
 
 
 ## 🔹 Supported Wound Classes
