@@ -93,4 +93,8 @@ docker run -d --name woundapp \
 - Model Optimization: The CNN handles spatial feature extraction (texture/edges), while the RAG pipeline handles semantic knowledge retrieval.
 - DevOps Readiness: Full Dockerization ensures the "it works on my machine" problem is eliminated, providing a clean path to cloud deployment.
 
+# 🔹 Authors
+1. Yuvaraj Kate (yuvarajkate1740@gmail.com)
+2. Dhamkirti Sisodia (dksisodia002@gmail.com)
+
 
