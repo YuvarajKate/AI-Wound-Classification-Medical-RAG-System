@@ -3,8 +3,11 @@
     "Bruises",
     "Burns",
     "Cut",
-    "Ingrown_nails",
-    "Laceration",
-    "Stab_wound",
+    "Diabetic Wounds",
+    "Laseration",
+    "Normal",
+    "Pressure Wounds",
+    "Surgical Wounds",
+    "Venous Wounds",
     "healthy"
 ]
