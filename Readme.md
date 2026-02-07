@@ -16,6 +16,17 @@ The application utilizes a modular AI pipeline:
 3.  **Inference Engine:** Generates safe, non-hallucinated responses via a local **Ollama LLM**.
 
 ---
+![System Architecture](https://github.com/user-attachments/assets/e292d2ed-f4e8-40ea-87b6-c1d76375335a)
+
+
+## 🔹 CNN Based Wound Classification
+![CNN-Based Wound Classification Flow](https://github.com/user-attachments/assets/35c41e0a-b60f-433b-a613-ae8f1005cb10)
+
+## 🔹 Medical RAG Pipeline Architecture
+![Medical RAG Pipeline Architecture](https://github.com/user-attachments/assets/c78483d2-005c-4d87-a717-c796eeef43fd)
+
+## 🔹 Overall Project Workflow
+![Overall Project Workflow Diagram](https://github.com/user-attachments/assets/ad7d09d2-e864-4152-8f4a-e99e7363f424)
 
 ## 🔹 Technology Stack
 
@@ -30,7 +41,8 @@ The application utilizes a modular AI pipeline:
 
 ---
 
-<img width="800" height="533" alt="image" src="https://github.com/user-attachments/assets/a153b5fa-13a7-421a-943f-b4e2accf38d1" />
+
+
 
 
 ## 🔹 Supported Wound Classes
